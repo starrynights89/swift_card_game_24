@@ -11,20 +11,15 @@ struct ContentView: View {
     @State var emojis: Array<String> = ["👻", "🎃", "🕷️", "😈", "💀", "🕸️", "🧙‍♀️", "🙀", "👹", "😱", "☠️", "🍭"]
     
     @State var emojisTravel: Array<String> = ["🚂", "🚀", "✈️", "🛳", "⛵️", "🚲", "🛵", " 🚜",
-        "🚃", "🚕", "🚓"]
+        "🚃", "🚕", "🚓", "🚗"]
     
     @State var emojisAnimals: Array<String> = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐮", "🐯", "🦁", "🐤"]
     
     // selected Array
-    @State var selectedArray: [String] = []
-    
-    // combine 3 strings together
-    var combinedEmojis: [String] {
-        emojis + emojisTravel + emojisAnimals
-    }
+    @State var selectedArray: Array<String> = []
     
     // set a temporary state for cardCount
-    @State var cardCount: Int = 4
+    //@State var cardCount: Int = 4
     
     var body: some View {
         VStack {
@@ -33,7 +28,7 @@ struct ContentView: View {
                 cards
             }
             Spacer()
-            cardCountAdjusters
+            //cardCountAdjusters
             themeChoice
         }
         .padding()
@@ -45,8 +40,8 @@ struct ContentView: View {
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-            ForEach(0..<cardCount, id: \.self) {
-                index in CardView(content: combinedEmojis[index])
+            ForEach(selectedArray, id: \.self) {
+                index in CardView(content: index)
                     .aspectRatio(2/3, contentMode: .fit)
             }
         }
@@ -55,38 +50,51 @@ struct ContentView: View {
     
     var themeChoice: some View {
         HStack {
+            Spacer()
             buttonTravel
+            Spacer()
             buttonHalloween
+            Spacer()
             buttonAnimals
+            Spacer()
         }
         .imageScale(.large)
     }
     
     var buttonTravel: some View {
         Button (action: {
-            selectedArray = combinedEmojis
+            selectedArray = emojisTravel
         }) {
-            Text("Travel")
+            VStack {
+                Image(systemName: "car.fill")
+                Text("Vehicles")
+            }
         }
     }
     
     var buttonHalloween: some View {
         Button (action: {
-            selectedArray = combinedEmojis
+            selectedArray = emojis
         }) {
-            Text("Halloween")
+            VStack{
+                Image(systemName: "moon.fill")
+                Text("Halloween")
+            }
         }
     }
     
     var buttonAnimals: some View {
         Button (action: {
-            selectedArray = combinedEmojis
+            selectedArray = emojisAnimals
         }) {
-            Text("Animals")
+            VStack{
+                Image(systemName: "dog.fill")
+                Text("Animals")
+            }
         }
     }
     
-    var cardCountAdjusters: some View {
+    /*var cardCountAdjusters: some View {
         HStack {
             cardRemover
             Spacer()
@@ -94,9 +102,9 @@ struct ContentView: View {
         }
         .imageScale(.large)
         .font(.largeTitle)
-    }
+    }*/
     
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
+    /*func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
         Button(action: {
             cardCount += offset
         }, label: {
@@ -112,7 +120,7 @@ struct ContentView: View {
     
     var cardAdder: some View {
         return cardCountAdjuster(by: +1, symbol: "rectangle.stack.badge.plus.fill")
-    }
+    }*/
 }
 
 #Preview {
