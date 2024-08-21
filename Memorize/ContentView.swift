@@ -104,8 +104,8 @@ struct ContentView: View {
             var cards: [Card] = []
             for index in emojis.indices {
                 let emoji = emojis[index]
-                cards.append(Card(content: emoji, id: "\(emoji)\(index)", isFaceUp: true))
-                cards.append(Card(content: emoji, id: "\(emoji)\(index+emojis.count)", isFaceUp: true))
+                cards.append(Card(content: emoji, id: "\(emoji)\(index)", isFaceUp: false))
+                cards.append(Card(content: emoji, id: "\(emoji)\(index+emojis.count)", isFaceUp: false))
             }
             return cards.shuffled() // Shuffle to randomize card order
     }
