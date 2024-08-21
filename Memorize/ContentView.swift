@@ -8,18 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var emojis: Array<String> = ["👻", "🎃", "🕷️", "😈", "💀", "🕸️", "🧙‍♀️", "🙀", "👹", "😱", "☠️", "🍭"]
+    @State var emojisHalloween: Array<String> = ["👻", "🎃", "🕷️", "😈", "💀", "🕸️", "🧙‍♀️", "🙀", "👹", "😱", "☠️", "🍭"]
     
-    @State var emojisTravel: Array<String> = ["🚂", "🚀", "✈️", "🛳", "⛵️", "🚲", "🛵", " 🚜",
-        "🚃", "🚕", "🚓", "🚗"]
+    @State var emojisTravel: Array<String> = ["🚂", "🚀", "✈️", "🛳", "⛵️", "🚲", "🛵", "🚜", "🚃", "🚕", "🚓", "🚗"]
     
     @State var emojisAnimals: Array<String> = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐮", "🐯", "🦁", "🐤"]
     
-    // selected Array
-    @State var selectedArray: Array<String> = []
-    
-    // set a temporary state for cardCount
-    //@State var cardCount: Int = 4
+    // selected Array stores button clicked
+    @State var selectedArray: Array<Card> = []
     
     var body: some View {
         VStack {
@@ -28,7 +24,6 @@ struct ContentView: View {
                 cards
             }
             Spacer()
-            //cardCountAdjusters
             themeChoice
         }
         .padding()
@@ -39,13 +34,17 @@ struct ContentView: View {
     }
     
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-            ForEach(selectedArray, id: \.self) {
-                index in CardView(content: index)
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 50))]) {
+            ForEach(selectedArray) {
+                card in CardView(content: card.content, isFaceUp: card.isFaceUp)
                     .aspectRatio(2/3, contentMode: .fit)
+                    .onTapGesture {
+                        flipCard(card: card)
+                }
             }
         }
         .foregroundColor(Color.orange)
+        .padding()
     }
     
     var themeChoice: some View {
@@ -63,7 +62,12 @@ struct ContentView: View {
     
     var buttonTravel: some View {
         Button (action: {
-            selectedArray = emojisTravel
+            selectedArray = emojisTravel.indices.map {
+                index in Card(content: emojisTravel[index], id: "\(emojisTravel[index])\(index)", isFaceUp: true)
+            } + emojisTravel.indices.map {
+                index in Card(content: emojisTravel[index], id: "\(emojisTravel[index])\(index+emojisTravel.count)", isFaceUp: true)
+            }
+            print("Selected Array Count: \(selectedArray.count)")
         }) {
             VStack {
                 Image(systemName: "car.fill")
@@ -74,7 +78,12 @@ struct ContentView: View {
     
     var buttonHalloween: some View {
         Button (action: {
-            selectedArray = emojis
+            selectedArray = emojisHalloween.indices.map {
+                index in Card(content: emojisHalloween[index], id: "\(emojisHalloween[index])\(index)", isFaceUp: true)
+            } + emojisHalloween.indices.map {
+                index in Card(content: emojisHalloween[index], id: "\(emojisHalloween[index])\(index+emojisHalloween.count)", isFaceUp: true)
+            }
+            print("Selected Array Count: \(selectedArray.count)")
         }) {
             VStack{
                 Image(systemName: "moon.fill")
@@ -85,7 +94,12 @@ struct ContentView: View {
     
     var buttonAnimals: some View {
         Button (action: {
-            selectedArray = emojisAnimals
+            selectedArray = emojisAnimals.indices.map {
+                index in Card(content: emojisAnimals[index], id: "\(emojisAnimals[index])\(index)", isFaceUp: true)
+            } + emojisAnimals.indices.map {
+                index in Card(content: emojisAnimals[index], id: "\(emojisAnimals[index])\(index+emojisAnimals.count)", isFaceUp: true)
+            }
+            print("Selected Array Count: \(selectedArray.count)")
         }) {
             VStack{
                 Image(systemName: "dog.fill")
@@ -94,43 +108,29 @@ struct ContentView: View {
         }
     }
     
-    /*var cardCountAdjusters: some View {
-        HStack {
-            cardRemover
-            Spacer()
-            cardAdder
+    // Updates the state when a card is tapped
+    func flipCard(card: Card) {
+        if let index = selectedArray.firstIndex(where: { $0.id == card.id }) {
+            selectedArray[index].isFaceUp.toggle()
         }
-        .imageScale(.large)
-        .font(.largeTitle)
-    }*/
-    
-    /*func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button(action: {
-            cardCount += offset
-        }, label: {
-            Image(systemName: symbol)
-        })
-        // disable card count button if less than one or greater than the emoji string array
-        .disabled(cardCount + offset < 1 || cardCount + offset > combinedEmojis.count)
     }
-    
-    var cardRemover: some View {
-        return cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
-    }
-    
-    var cardAdder: some View {
-        return cardCountAdjuster(by: +1, symbol: "rectangle.stack.badge.plus.fill")
-    }*/
 }
 
 #Preview {
     ContentView()
 }
 
+// Card Identifiable helps SwiftUI distinguish between cards
+struct Card: Identifiable {
+    let content: String
+    let id: String
+    var isFaceUp: Bool
+}
+
 struct CardView: View {
     let content: String
     // set a temporary state for isFaceUp
-    @State var isFaceUp = true
+    @State var isFaceUp: Bool
     
     var body: some View {
         ZStack {
