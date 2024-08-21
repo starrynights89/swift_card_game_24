@@ -62,11 +62,8 @@ struct ContentView: View {
     
     var buttonTravel: some View {
         Button (action: {
-            selectedArray = emojisTravel.indices.map {
-                index in Card(content: emojisTravel[index], id: "\(emojisTravel[index])\(index)", isFaceUp: true)
-            } + emojisTravel.indices.map {
-                index in Card(content: emojisTravel[index], id: "\(emojisTravel[index])\(index+emojisTravel.count)", isFaceUp: true)
-            }
+            let selectedEmojis = Array(emojisTravel.prefix(8)) // Select first 6 emojis
+            selectedArray = createPairs(from: selectedEmojis)
             print("Selected Array Count: \(selectedArray.count)")
         }) {
             VStack {
@@ -78,11 +75,8 @@ struct ContentView: View {
     
     var buttonHalloween: some View {
         Button (action: {
-            selectedArray = emojisHalloween.indices.map {
-                index in Card(content: emojisHalloween[index], id: "\(emojisHalloween[index])\(index)", isFaceUp: true)
-            } + emojisHalloween.indices.map {
-                index in Card(content: emojisHalloween[index], id: "\(emojisHalloween[index])\(index+emojisHalloween.count)", isFaceUp: true)
-            }
+            let selectedEmojis = Array(emojisHalloween.prefix(12)) // Select first 5 emojis
+            selectedArray = createPairs(from: selectedEmojis)
             print("Selected Array Count: \(selectedArray.count)")
         }) {
             VStack{
@@ -94,11 +88,8 @@ struct ContentView: View {
     
     var buttonAnimals: some View {
         Button (action: {
-            selectedArray = emojisAnimals.indices.map {
-                index in Card(content: emojisAnimals[index], id: "\(emojisAnimals[index])\(index)", isFaceUp: true)
-            } + emojisAnimals.indices.map {
-                index in Card(content: emojisAnimals[index], id: "\(emojisAnimals[index])\(index+emojisAnimals.count)", isFaceUp: true)
-            }
+            let selectedEmojis = Array(emojisAnimals.prefix(6)) // Select first 6 emojis
+            selectedArray = createPairs(from: selectedEmojis)
             print("Selected Array Count: \(selectedArray.count)")
         }) {
             VStack{
@@ -106,6 +97,17 @@ struct ContentView: View {
                 Text("Animals")
             }
         }
+    }
+    
+    // function takes an array of selected emojis and creates two Card objects for each emoji (one for each pair)
+    func createPairs(from emojis: [String]) -> [Card] {
+            var cards: [Card] = []
+            for index in emojis.indices {
+                let emoji = emojis[index]
+                cards.append(Card(content: emoji, id: "\(emoji)\(index)", isFaceUp: true))
+                cards.append(Card(content: emoji, id: "\(emoji)\(index+emojis.count)", isFaceUp: true))
+            }
+            return cards.shuffled() // Shuffle to randomize card order
     }
     
     // Updates the state when a card is tapped
