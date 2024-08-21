@@ -18,15 +18,12 @@ struct ContentView: View {
     @State var selectedArray: Array<Card> = []
     
     var body: some View {
-        VStack {
             title
             ScrollView {
                 cards
             }
-            Spacer()
+            .padding()
             themeChoice
-        }
-        .padding()
     }
     
     var title: some View {
